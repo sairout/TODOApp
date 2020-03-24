@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="update_task/{{ item.id }}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+    <label for="exampleFormControlTextarea1">Task</label>
+    <textarea class="form-control" name="item" id="exampleFormControlTextarea1" rows="3">{{ item.item }}</textarea>
+  </div>
+  <div class="form-group form-check">
+      {% if item.complete %}
+    <input type="checkbox" name="completed" checked class="form-check-input" id="exampleCheck1">
+      {% else %}
+      <input type="checkbox" name="completed" class="form-check-input" id="exampleCheck2">
+      {% endif %}
+    <label class="form-check-label" for="exampleCheck1">Completed</label>
+  </div>
+    <a href="" class="btn btn-danger">Cancel</a>
+  <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+{% endblock %}
