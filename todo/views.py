@@ -2,22 +2,38 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from .models import Todo
 from django.contrib import messages
-from .forms import TodoForm
+import requests
 
 # Create your views here.
 
 
 def home(request):
     if 'username' in request.session:
-        print(request.session['username'])
         username = request.session['username']
         items = Todo.objects.filter(username=username)
         context = {'items': items, 'username': username}
         return render(request, 'home.html', context)
     else:
-        print('no username')
         return render(request, 'home.html')
 
+
+def weather(request):
+    if request.method == 'POST':
+        url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=5875d3887f5a4cbd863d58dd375a6818'
+        city = request.POST['city']
+
+        r = requests.get(url.format(city)).json()
+        print(r)
+
+        city_weather = {
+            'city': city,
+            'temperature': r['main']['temp'],
+            'description': r['weather'][0]['description'],
+            'icon': r['weather'][0]['icon'],
+        }
+        return render(request, 'weather.html', city_weather)
+    else:
+        return render(request, 'weather.html')
 
 
 def edit(request, pk):
@@ -50,9 +66,8 @@ def signup_page(request):
 
 
 def add_item(request, pk):
-    print(pk)
-    if pk is None:
-        return render(request, 'login.html')
+    if request.POST['item'] == '':
+        return redirect('/')
     else:
         user = User.objects.get(id=pk)
         username = user.username

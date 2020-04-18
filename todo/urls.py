@@ -6,6 +6,7 @@ app_name = 'todo'
 
 urlpatterns = [
     path('', views.home),
+    path('weather', views.weather),
     path('register', views.register),
     path('login', views.login),
     path('logout', views.logout),
